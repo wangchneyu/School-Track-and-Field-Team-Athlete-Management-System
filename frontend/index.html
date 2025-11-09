@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>校级田径队管理平台 · 登录</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <main class="container" style="max-width: 900px; padding-top: 4rem;">
+      <div class="card" style="text-align: center;">
+        <h1>校级田径队管理平台</h1>
+        <p class="muted">请选择身份登录系统，管理员与运动员使用各自账号。</p>
+      </div>
+      <div class="flex">
+        <div class="card" style="flex: 2;">
+          <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+            <button class="btn btn-primary" data-mode="athlete">运动员</button>
+            <button class="btn btn-outline" data-mode="admin">管理员</button>
+          </div>
+          <p id="modeNote" class="alert alert-info"></p>
+          <form id="loginForm">
+            <label for="username">账号 / 学号</label>
+            <input id="username" type="text" placeholder="学号" autocomplete="username" />
+            <label for="password">密码</label>
+            <input id="password" type="password" placeholder="密码" autocomplete="current-password" />
+            <button class="btn btn-primary" style="width:100%; margin-top:1rem;">立即登录</button>
+          </form>
+          <div id="loginMessage"></div>
+        </div>
+        <div class="card" data-countdown style="flex: 1;">
+          <h2>最近赛事倒计时</h2>
+          <p data-event-name>加载中...</p>
+          <p data-event-time></p>
+          <div class="countdown-timer" data-event-countdown>--</div>
+          <p class="muted" style="font-size:0.9rem;">管理员可在后台设置赛事信息。</p>
+        </div>
+      </div>
+    </main>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/auth.js"></script>
+  </body>
+</html>

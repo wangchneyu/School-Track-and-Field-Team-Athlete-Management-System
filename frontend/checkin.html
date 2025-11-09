@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>扫码签到 · 校级田径队管理平台</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <main class="container" style="max-width: 640px; padding-top: 3rem;">
+      <div class="card">
+        <h1>扫码签到</h1>
+        <p id="qrInfo">正在加载签到信息...</p>
+        <button id="checkinBtn" class="btn btn-primary" style="width:100%; margin: 1rem 0;">
+          立即签到
+        </button>
+        <div id="checkinMessage"></div>
+        <p class="muted" style="font-size: 0.9rem;">
+          提示：签到需使用运动员账号登录。如果尚未登录，将跳转至登录页，完成登录后自动返回。
+        </p>
+      </div>
+    </main>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/checkin.js"></script>
+  </body>
+</html>

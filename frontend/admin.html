@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管理员面板 · 校级田径队管理平台</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <strong>校级田径队 · 管理员面板</strong>
+      </div>
+      <button id="logoutBtn" class="btn btn-outline">退出登录</button>
+    </header>
+    <main class="container">
+      <div class="card" data-countdown>
+        <h2>最近赛事倒计时</h2>
+        <p data-event-name>加载中...</p>
+        <p data-event-time></p>
+        <div class="countdown-timer" data-event-countdown>--</div>
+      </div>
+      <div class="flex">
+        <div class="card" style="flex:2;">
+          <h2>赛事信息配置</h2>
+          <form id="eventForm">
+            <label>赛事名称</label>
+            <input name="name" type="text" placeholder="如：校运会田径选拔赛" />
+            <label>开始时间</label>
+            <input name="start_time" type="datetime-local" />
+            <label>地点</label>
+            <input name="location" type="text" placeholder="田径场" />
+            <label>描述</label>
+            <textarea name="description" rows="3" placeholder="备注信息"></textarea>
+            <button class="btn btn-primary" type="submit">保存</button>
+          </form>
+          <div id="eventMessage"></div>
+        </div>
+        <div class="card" style="flex:1;">
+          <h2>修改密码</h2>
+          <form id="passwordForm">
+            <input type="password" name="oldPassword" placeholder="当前密码" />
+            <input type="password" name="newPassword" placeholder="新密码" />
+            <button class="btn btn-primary" type="submit">更新密码</button>
+          </form>
+          <div id="passwordMessage"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>二维码签到</h2>
+        <form id="qrForm" class="flex" style="flex-wrap:wrap;">
+          <div style="flex:1; min-width:220px;">
+            <label>训练场次</label>
+            <select id="qrSessionSelect" required></select>
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label>有效时间（分钟）</label>
+            <input type="number" name="expire" value="15" min="1" max="180" />
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label>次数限制（0 为不限）</label>
+            <input type="number" name="limit" value="0" min="0" />
+          </div>
+          <div style="flex:1 1 100%;">
+            <label>备注</label>
+            <input type="text" name="note" placeholder="示例：下午签到" />
+          </div>
+          <button class="btn btn-primary" type="submit">生成二维码</button>
+        </form>
+        <div id="qrMessage"></div>
+        <div id="qrPreview" class="flex" style="align-items:center; gap:2rem;"></div>
+      </div>
+      <div class="card">
+        <h2>运动员训练出勤率</h2>
+        <div style="overflow-x:auto;">
+          <table class="table" id="attendanceTable">
+            <thead>
+              <tr>
+                <th>姓名</th>
+                <th>训练组</th>
+                <th>记录场次</th>
+                <th>出勤次数</th>
+                <th>出勤率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5">加载中...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>项目人数占比</h2>
+        <div id="eventDistribution" class="stats-grid"></div>
+      </div>
+    </main>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/lib/qrcode.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+  </body>
+</html>
