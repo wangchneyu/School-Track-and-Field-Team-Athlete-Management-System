@@ -5,7 +5,6 @@
 ## 运行环境
 - Python 3.11+
 - pip / virtualenv
-- （可选）Node 无需：前端为静态文件
 
 ## 快速上手
 ```bash
@@ -61,7 +60,6 @@ uvicorn main:app --reload
 2. **端口冲突**：修改 `uvicorn main:app --reload --port 9001`。
 3. **需要重置数据库**：删除 `athletics.db` 后重新运行 `python scripts/seed_data.py`。
 
-欢迎根据实际需求继续扩展，例如引入正式数据库、前端框架或扫码考勤等。祝开发顺利！
 
 ## Docker 运行
 ```bash
@@ -78,10 +76,3 @@ docker compose up
 
 - 默认监听 `http://127.0.0.1:8000`，可通过 `PORT` 环境变量覆盖映射端口，例如启动前 `set PORT=9000`（Windows）或 `PORT=9000 docker compose up`。
 - 如果更新了 `.env`，记得重新 `docker compose up` 以让容器加载最新配置。
-
-## 新增 · 二维码签到（V2 功能起步）
-
-- 管理员在后台“二维码签到”卡片中选择训练场次，配置有效期与次数限制后生成二维码。
-- 系统返回的二维码内容为 `FRONTEND_BASE_URL/static/checkin.html?token=...`，同时包含场次地点、时间、备注。
-- 运动员使用电脑或手机扫描二维码后，如已登录会自动提交签到；若未登录，将跳转到登录页，完成认证后回到签到页再次提交。
-- 二维码过期或达到次数上限会自动失效，扫码页会给出提示信息。
