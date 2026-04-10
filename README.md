@@ -1,6 +1,7 @@
 ﻿# 校级田径组织考勤与成绩平台
+<img width="2560" height="1398" alt="image" src="https://github.com/user-attachments/assets/88d5a39e-ac9e-443f-915d-b3bf8f6b576a" />
 
-基于 **FastAPI + SQLite + 原生前端** 的校级田径队管理系统，可记录考勤、成绩、排行榜，并提供运动员 / 管理员双面板界面。
+基于 **FastAPI + Postgre + 原生前端** 的校级田径队管理系统，可记录考勤、成绩、排行榜，并提供运动员 / 管理员双面板界面。
 
 ## 运行环境
 - Python 3.11+
@@ -60,7 +61,10 @@ uvicorn main:app --reload
 2. **端口冲突**：修改 `uvicorn main:app --reload --port 9001`。
 3. **需要重置数据库**：删除 `athletics.db` 后重新运行 `python scripts/seed_data.py`。
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 58bca2f91f9d2a60c1cf78f627b87a665a1241fa
 ## Docker 运行
 ```bash
 # 1. 构建镜像（首次）
@@ -73,6 +77,9 @@ docker compose run --rm app python scripts/seed_data.py
 docker compose up
 # 或后台运行： docker compose up -d
 ```
+<<<<<<< HEAD
 
 - 默认监听 `http://127.0.0.1:8000`，可通过 `PORT` 环境变量覆盖映射端口，例如启动前 `set PORT=9000`（Windows）或 `PORT=9000 docker compose up`。
 - 如果更新了 `.env`，记得重新 `docker compose up` 以让容器加载最新配置。
+=======
+>>>>>>> 58bca2f91f9d2a60c1cf78f627b87a665a1241fa
