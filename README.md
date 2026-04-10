@@ -1,4 +1,5 @@
 ﻿# 校级田径组织考勤与成绩平台
+<img width="2560" height="1398" alt="image" src="https://github.com/user-attachments/assets/88d5a39e-ac9e-443f-915d-b3bf8f6b576a" />
 
 基于 **FastAPI + SQLite + 原生前端** 的校级田径队管理系统，可记录考勤、成绩、排行榜，并提供运动员 / 管理员双面板界面。
 
