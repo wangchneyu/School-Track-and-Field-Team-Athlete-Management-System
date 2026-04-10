@@ -166,3 +166,42 @@ export interface Toast {
   message: string
   type: ToastType
 }
+
+export interface AthleteCheckinDetail {
+  athlete_id: number
+  name: string
+  student_id: string
+  group: string
+  status: 'present' | 'late' | 'absent' | 'leave' | 'unchecked'
+  method: string | null
+  checkin_time: string | null
+}
+
+export interface SessionAttendanceStat {
+  session_id: number
+  session_date: string
+  start_time: string
+  end_time: string
+  location: string
+  total_athletes: number
+  present_count: number
+  late_count: number
+  absent_count: number
+  leave_count: number
+  unchecked_count: number
+  attendance_rate: number
+  athletes: AthleteCheckinDetail[]
+}
+
+export interface DailyAttendanceSummary {
+  date: string
+  total_sessions: number
+  total_athletes: number
+  present_count: number
+  late_count: number
+  absent_count: number
+  leave_count: number
+  unchecked_count: number
+  attendance_rate: number
+  sessions: SessionAttendanceStat[]
+}

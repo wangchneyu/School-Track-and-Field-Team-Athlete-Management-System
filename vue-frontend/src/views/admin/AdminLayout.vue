@@ -1,45 +1,45 @@
 <template>
   <div class="admin-layout">
     <!-- Mobile overlay -->
-    <div v-if="appStore.sidebarOpen" class="sidebar-overlay lg:hidden" @click="appStore.toggleSidebar" />
+    <div v-if="appStore.sidebarOpen" class="sidebar-overlay" @click="appStore.toggleSidebar" />
 
     <!-- Sidebar -->
     <aside :class="['admin-sidebar scrollbar-thin', { open: appStore.sidebarOpen }]">
       <div class="sidebar-header">
-        <div class="flex items-center gap-2.5">
+        <div class="sidebar-brand">
           <div class="sidebar-logo-icon">
-            <svg class="w-5 h-5" viewBox="0 0 40 40" fill="none">
+            <svg class="sidebar-logo-svg" viewBox="0 0 40 40" fill="none">
               <path d="M12 28 L18 14 L22 22 L28 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
           <div>
-            <p class="text-sm font-bold" style="color: hsl(210 40% 98%)">Athletics</p>
-            <p class="text-[10px] font-medium" style="color: hsl(210 30% 60%)">管理后台</p>
+            <p class="sidebar-brand-title">Athletics</p>
+            <p class="sidebar-brand-sub">管理后台</p>
           </div>
         </div>
-        <button class="lg:hidden btn-ghost p-1.5 rounded-md" style="color: hsl(210 30% 70%)" @click="appStore.toggleSidebar">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button class="sidebar-close-btn" @click="appStore.toggleSidebar">
+          <svg class="sidebar-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <nav class="sidebar-nav">
         <div class="sidebar-section-label">概览</div>
         <RouterLink to="/admin" class="sidebar-link" active-class="active" :class="{ active: $route.path === '/admin' }" @click="closeMobileSidebar">
-          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+          <svg class="sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
           <span>仪表盘</span>
         </RouterLink>
 
         <div class="sidebar-section-label">管理</div>
         <RouterLink v-for="item in navItems" :key="item.path" :to="item.path" class="sidebar-link" active-class="active" @click="closeMobileSidebar">
           <component :is="item.icon" />
-          <span class="flex-1">{{ item.label }}</span>
+          <span class="sidebar-link-text">{{ item.label }}</span>
           <span v-if="item.badge && unreadCount > 0" class="sidebar-notif-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
         </RouterLink>
       </nav>
 
       <div class="sidebar-footer">
-        <button class="sidebar-link w-full" @click="appStore.openSettings">
-          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <button class="sidebar-link sidebar-link-full" @click="appStore.openSettings">
+          <svg class="sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           <span>个人设置</span>
         </button>
       </div>
@@ -49,18 +49,18 @@
     <div class="admin-main">
       <!-- Top bar -->
       <header class="admin-topbar">
-        <button class="lg:hidden btn-ghost p-2 rounded-md" @click="appStore.toggleSidebar">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <button class="topbar-menu-btn" @click="appStore.toggleSidebar">
+          <svg class="topbar-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <div class="flex-1" />
-        <div class="flex items-center gap-2">
+        <div class="topbar-spacer" />
+        <div class="topbar-actions">
           <!-- Notification bell -->
-          <RouterLink to="/admin/notifications" class="btn-ghost p-2 rounded-md relative">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <RouterLink to="/admin/notifications" class="topbar-action-btn">
+            <svg class="topbar-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
             <span v-if="unreadCount > 0" class="topbar-notif-badge">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
           </RouterLink>
-          <button class="btn-ghost p-2 rounded-md relative" @click="appStore.openSettings">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <button class="topbar-action-btn" @click="appStore.openSettings">
+            <svg class="topbar-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </button>
         </div>
       </header>
@@ -143,6 +143,9 @@ void route
   background: hsl(220 65% 10% / 0.5);
   backdrop-filter: blur(2px);
 }
+@media (min-width: 1024px) {
+  .sidebar-overlay { display: none; }
+}
 
 .admin-sidebar {
   position: fixed;
@@ -174,7 +177,11 @@ void route
   padding: 1.25rem 1rem;
   border-bottom: 1px solid hsl(0 0% 100% / 0.06);
 }
-
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
 .sidebar-logo-icon {
   width: 32px;
   height: 32px;
@@ -184,6 +191,43 @@ void route
   justify-content: center;
   background: hsl(var(--accent) / 0.15);
   color: hsl(var(--accent));
+  flex-shrink: 0;
+}
+.sidebar-logo-svg {
+  width: 20px;
+  height: 20px;
+}
+.sidebar-brand-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: hsl(210 40% 98%);
+}
+.sidebar-brand-sub {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: hsl(210 30% 60%);
+}
+.sidebar-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  color: hsl(210 30% 70%);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sidebar-close-btn:hover {
+  background: hsl(0 0% 100% / 0.08);
+}
+@media (min-width: 1024px) {
+  .sidebar-close-btn { display: none; }
+}
+.sidebar-close-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .sidebar-nav {
@@ -198,6 +242,39 @@ void route
   letter-spacing: 0.08em;
   color: hsl(210 20% 45%);
   padding: 0.75rem 0.75rem 0.375rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  text-decoration: none;
+}
+.sidebar-link:hover {
+  background: hsl(var(--accent) / 0.08);
+  color: hsl(var(--foreground));
+}
+.sidebar-link.active {
+  background: hsl(var(--accent) / 0.12);
+  color: hsl(var(--accent));
+  font-weight: 600;
+}
+.sidebar-link-full { width: 100%; }
+.sidebar-link-text { flex: 1; }
+.sidebar-nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .sidebar-footer {
@@ -220,27 +297,78 @@ void route
 
 .admin-main {
   flex: 1;
-  margin-left: 240px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-
-@media (max-width: 1023px) {
-  .admin-main {
-    margin-left: 0;
-  }
+@media (min-width: 1024px) {
+  .admin-main { margin-left: 240px; }
 }
 
 .admin-topbar {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   position: sticky;
   top: 0;
   z-index: 30;
+}
+@media (min-width: 640px) {
+  .admin-topbar { padding: 0.75rem 1.5rem; }
+}
+
+.topbar-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.topbar-menu-btn:hover {
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--foreground));
+}
+@media (min-width: 1024px) {
+  .topbar-menu-btn { display: none; }
+}
+.topbar-menu-icon {
+  width: 20px;
+  height: 20px;
+}
+.topbar-spacer { flex: 1; }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.topbar-action-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.topbar-action-btn:hover {
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--foreground));
+}
+.topbar-action-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .topbar-notif-badge {
@@ -261,14 +389,11 @@ void route
 
 .admin-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   overflow-y: auto;
 }
-
-@media (max-width: 640px) {
-  .admin-content {
-    padding: 1rem;
-  }
+@media (min-width: 640px) {
+  .admin-content { padding: 1.5rem; }
 }
 
 /* Page transition */

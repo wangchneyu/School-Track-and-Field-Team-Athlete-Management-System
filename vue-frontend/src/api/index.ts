@@ -104,6 +104,8 @@ export const rankingApi = {
 export const statsApi = {
   attendance: () => api.get('/stats/attendance'),
   events: () => api.get('/stats/events'),
+  dailyAttendance: (date?: string) => api.get('/stats/daily-attendance', { params: date ? { target_date: date } : {} }),
+  sessionAttendance: (sessionId: number) => api.get(`/stats/session-attendance/${sessionId}`),
 }
 
 /* ---- Featured Event ---- */
