@@ -61,9 +61,9 @@
     </div>
 
     <!-- Quick stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+    <div class="stats-grid">
       <div v-for="(stat, i) in statsCards" :key="stat.label" class="stat-card animate-fade-in" :style="{ animationDelay: (i * 80 + 150) + 'ms' }">
-        <div class="stat-icon-wrap" :style="{ background: stat.bg }">
+        <div class="stat-icon-wrap" :style="{ background: stat.bg, color: stat.color }">
           <span v-html="stat.icon" />
         </div>
         <div class="stat-info">
@@ -74,10 +74,10 @@
     </div>
 
     <!-- Two-column layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+    <div class="content-grid">
       <!-- Recent scores -->
-      <div class="card-base p-5 animate-fade-in" style="animation-delay: 350ms">
-        <div class="section-header mb-4">
+      <div class="content-card animate-fade-in" style="animation-delay: 350ms">
+        <div class="section-header mb-3">
           <h3 class="section-title-sm">
             <svg class="w-4 h-4 text-accent inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             最近成绩
@@ -105,8 +105,8 @@
       </div>
 
       <!-- Recent ratings -->
-      <div class="card-base p-5 animate-fade-in" style="animation-delay: 400ms">
-        <div class="section-header mb-4">
+      <div class="content-card animate-fade-in" style="animation-delay: 400ms">
+        <div class="section-header mb-3">
           <h3 class="section-title-sm">
             <svg class="w-4 h-4 text-accent inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
             最近评分
@@ -147,8 +147,8 @@
     </div>
 
     <!-- Recent notifications -->
-    <div class="card-base p-5 animate-fade-in" style="animation-delay: 450ms">
-      <div class="section-header mb-4">
+    <div class="content-card animate-fade-in" style="animation-delay: 450ms">
+      <div class="section-header mb-3">
         <h3 class="section-title-sm">
           <svg class="w-4 h-4 text-accent inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
           最新通知
@@ -222,28 +222,28 @@ const statsCards = computed(() => [
   {
     label: '成绩记录',
     value: myScoresCount.value,
-    icon: '<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
     bg: 'hsl(var(--accent) / 0.12)',
     color: 'hsl(var(--accent))',
   },
   {
     label: '出勤率',
     value: attendanceRate.value + (attendanceRate.value !== '—' ? '%' : ''),
-    icon: '<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
     bg: 'hsl(var(--success) / 0.12)',
     color: 'hsl(var(--success))',
   },
   {
     label: '评分次数',
     value: ratingsCount.value,
-    icon: '<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>',
     bg: 'hsl(var(--primary) / 0.12)',
     color: 'hsl(var(--primary))',
   },
   {
     label: '平均得分',
     value: avgRating.value,
-    icon: '<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>',
     bg: 'hsl(var(--warning) / 0.12)',
     color: 'hsl(var(--warning))',
   },
@@ -303,8 +303,11 @@ onMounted(async () => {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: 1.25rem;
-  padding: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+}
+@media (min-width: 640px) {
+  .welcome-hero { padding: 1.5rem; margin-bottom: 1.25rem; }
 }
 .welcome-hero-bg {
   position: absolute;
@@ -318,12 +321,15 @@ onMounted(async () => {
 }
 
 .avatar-ring {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   padding: 2px;
   background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
   flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .avatar-ring { width: 56px; height: 56px; }
 }
 .avatar-inner {
   width: 100%;
@@ -335,36 +341,48 @@ onMounted(async () => {
   justify-content: center;
 }
 .avatar-text {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: hsl(var(--accent));
 }
+@media (min-width: 640px) {
+  .avatar-text { font-size: 1.25rem; }
+}
 
 .welcome-name {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: hsl(210 40% 98%);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.125rem;
+}
+@media (min-width: 640px) {
+  .welcome-name { font-size: 1.125rem; margin-bottom: 0.25rem; }
 }
 .welcome-sub {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: hsl(210 30% 65%);
+}
+@media (min-width: 640px) {
+  .welcome-sub { font-size: 0.75rem; }
 }
 .welcome-badges {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  margin-top: 0.625rem;
 }
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.625rem;
+  padding: 0.1875rem 0.5rem;
   border-radius: 99px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 500;
   background: hsl(0 0% 100% / 0.1);
   color: hsl(210 30% 80%);
+}
+@media (min-width: 640px) {
+  .hero-badge { font-size: 0.7rem; padding: 0.25rem 0.625rem; }
 }
 .hero-badge-accent {
   background: hsl(var(--accent) / 0.2);
@@ -376,19 +394,25 @@ onMounted(async () => {
   border-radius: var(--radius-lg);
   border: 1px solid hsl(var(--accent) / 0.2);
   background: hsl(var(--accent) / 0.04);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   overflow: hidden;
+}
+@media (min-width: 640px) {
+  .training-alert { margin-bottom: 1.25rem; }
 }
 .training-alert-header {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.875rem 1rem;
+  gap: 0.5rem;
+  padding: 0.75rem 0.875rem;
   border-bottom: 1px solid hsl(var(--accent) / 0.1);
 }
+@media (min-width: 640px) {
+  .training-alert-header { padding: 0.875rem 1rem; gap: 0.625rem; }
+}
 .training-alert-icon {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--radius-sm);
   background: hsl(var(--accent) / 0.15);
   color: hsl(var(--accent));
@@ -397,14 +421,20 @@ onMounted(async () => {
   justify-content: center;
   animation: pulse-soft 2s ease-in-out infinite;
 }
+@media (min-width: 640px) {
+  .training-alert-icon { width: 32px; height: 32px; }
+}
 .training-alert-title {
   flex: 1;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: hsl(var(--foreground));
 }
+@media (min-width: 640px) {
+  .training-alert-title { font-size: 0.875rem; }
+}
 .training-alert-badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   padding: 0.125rem 0.5rem;
   border-radius: 99px;
@@ -412,16 +442,22 @@ onMounted(async () => {
   color: hsl(var(--accent-foreground));
 }
 .training-alert-list {
-  padding: 0.5rem;
+  padding: 0.375rem;
+}
+@media (min-width: 640px) {
+  .training-alert-list { padding: 0.5rem; }
 }
 .training-alert-item {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.625rem 0.5rem;
+  gap: 0.5rem;
+  padding: 0.5rem 0.375rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
+}
+@media (min-width: 640px) {
+  .training-alert-item { gap: 0.625rem; padding: 0.625rem 0.5rem; }
 }
 .training-alert-item:hover {
   background: hsl(var(--accent) / 0.06);
@@ -449,7 +485,7 @@ onMounted(async () => {
   margin-top: 0.125rem;
 }
 .training-alert-item-priority {
-  font-size: 0.65rem;
+  font-size: 0.625rem;
   font-weight: 600;
   padding: 0.125rem 0.375rem;
   border-radius: 4px;
@@ -460,44 +496,92 @@ onMounted(async () => {
 .priority-high { background: hsl(var(--warning) / 0.15); color: hsl(var(--warning)); }
 .priority-urgent { background: hsl(var(--destructive) / 0.15); color: hsl(var(--destructive)); }
 
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
+}
+
 /* Stats cards */
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 0.625rem;
+  padding: 0.875rem;
   border-radius: var(--radius-md);
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   box-shadow: var(--shadow-card);
   transition: var(--transition-smooth);
 }
+@media (min-width: 640px) {
+  .stat-card { padding: 1rem; gap: 0.75rem; }
+}
 .stat-card:hover {
   box-shadow: var(--shadow-card-hover);
   transform: translateY(-1px);
 }
 .stat-icon-wrap {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
+@media (min-width: 640px) {
+  .stat-icon-wrap { width: 40px; height: 40px; }
+}
 .stat-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 .stat-value {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.2;
 }
+@media (min-width: 640px) {
+  .stat-value { font-size: 1.25rem; }
+}
 .stat-label {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: hsl(var(--muted-foreground));
   margin-top: 0.125rem;
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .stat-label { font-size: 0.6875rem; }
+}
+
+/* Content grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 1024px) {
+  .content-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
+}
+
+/* Content card */
+.content-card {
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-card);
+}
+@media (min-width: 640px) {
+  .content-card { padding: 1.25rem; }
 }
 
 /* Score items */
@@ -512,18 +596,23 @@ onMounted(async () => {
 .score-item-left {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
 }
 .score-event-badge {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 700;
   flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .score-event-badge { width: 28px; height: 28px; font-size: 0.6875rem; }
 }
 .score-event-badge.official {
   background: hsl(var(--accent) / 0.12);
@@ -534,14 +623,18 @@ onMounted(async () => {
   color: hsl(var(--primary-light));
 }
 .score-value {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: hsl(var(--accent));
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .score-value { font-size: 1.125rem; }
 }
 
 /* Rating items */
 .rating-item {
-  padding: 0.75rem 0;
+  padding: 0.625rem 0;
   border-bottom: 1px solid hsl(var(--border));
 }
 .rating-item:last-child { border-bottom: none; }
@@ -552,16 +645,19 @@ onMounted(async () => {
   margin-bottom: 0.5rem;
 }
 .rating-avg {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: hsl(var(--accent) / 0.12);
   color: hsl(var(--accent));
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+@media (min-width: 640px) {
+  .rating-avg { width: 32px; height: 32px; font-size: 0.8125rem; }
 }
 .rating-bars { display: flex; flex-direction: column; gap: 0.375rem; }
 .rating-bar-item {
@@ -603,22 +699,28 @@ onMounted(async () => {
 .notif-item {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   padding: 0.5rem 0.375rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
 }
+@media (min-width: 640px) {
+  .notif-item { gap: 0.625rem; }
+}
 .notif-item:hover { background: hsl(var(--muted) / 0.5); }
 .notif-item.unread { background: hsl(var(--accent) / 0.03); }
 .notif-type-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .notif-type-icon { width: 28px; height: 28px; }
 }
 .notif-type-icon.type-training { background: hsl(var(--accent) / 0.12); color: hsl(var(--accent)); }
 .notif-type-icon.type-announcement { background: hsl(var(--primary) / 0.12); color: hsl(var(--primary-light)); }
@@ -631,18 +733,26 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 
-/* Section title */
+/* Section header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .section-title-sm {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: hsl(var(--foreground));
   display: flex;
   align-items: center;
 }
+@media (min-width: 640px) {
+  .section-title-sm { font-size: 0.875rem; }
+}
 
 /* Empty state */
 .empty-state {
-  padding: 1.5rem 0;
+  padding: 1.25rem 0;
   text-align: center;
 }
 </style>

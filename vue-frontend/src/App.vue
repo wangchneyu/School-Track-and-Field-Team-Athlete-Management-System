@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen">
     <!-- Toast container -->
-    <TransitionGroup name="toast" tag="div" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2">
+    <TransitionGroup name="toast" tag="div" class="toast-container">
       <div
         v-for="toast in appStore.toasts"
         :key="toast.id"
@@ -32,6 +32,20 @@ const appStore = useAppStore()
 </script>
 
 <style>
+.toast-container {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+@media (min-width: 640px) {
+  .toast-container {
+    bottom: 1rem;
+  }
+}
 .toast-enter-active {
   animation: slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

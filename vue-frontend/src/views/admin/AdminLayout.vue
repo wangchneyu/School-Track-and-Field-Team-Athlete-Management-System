@@ -32,7 +32,8 @@
         <div class="sidebar-section-label">管理</div>
         <RouterLink v-for="item in navItems" :key="item.path" :to="item.path" class="sidebar-link" active-class="active" @click="closeMobileSidebar">
           <component :is="item.icon" />
-          <span>{{ item.label }}</span>
+          <span class="flex-1">{{ item.label }}</span>
+          <span v-if="item.badge && unreadCount > 0" class="sidebar-notif-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
         </RouterLink>
       </nav>
 
@@ -52,7 +53,12 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
         <div class="flex-1" />
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <!-- Notification bell -->
+          <RouterLink to="/admin/notifications" class="btn-ghost p-2 rounded-md relative">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span v-if="unreadCount > 0" class="topbar-notif-badge">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+          </RouterLink>
           <button class="btn-ghost p-2 rounded-md relative" @click="appStore.openSettings">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </button>
@@ -72,15 +78,24 @@
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, ref, onMounted } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
+import { notificationApi } from '@/api'
 
 const appStore = useAppStore()
 const route = useRoute()
+const unreadCount = ref(0)
 
 function closeMobileSidebar() {
   if (window.innerWidth < 1024) appStore.sidebarOpen = false
+}
+
+async function fetchUnreadCount() {
+  try {
+    const res = await notificationApi.getUnreadCount()
+    unreadCount.value = res.data?.unread_count || 0
+  } catch { /* ignore */ }
 }
 
 // SVG icon components
@@ -92,19 +107,26 @@ const IconTrophy = () => h('svg', { class: 'w-[18px] h-[18px]', fill: 'none', st
 const IconFlag = () => h('svg', { class: 'w-[18px] h-[18px]', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', innerHTML: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2z"/>' })
 const IconStar = () => h('svg', { class: 'w-[18px] h-[18px]', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', innerHTML: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>' })
 const IconBook = () => h('svg', { class: 'w-[18px] h-[18px]', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', innerHTML: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>' })
+const IconBell = () => h('svg', { class: 'w-[18px] h-[18px]', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', innerHTML: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>' })
 
 const navItems = [
-  { path: '/admin/athletes', label: '运动员管理', icon: IconUsers },
-  { path: '/admin/training', label: '训练管理', icon: IconCalendar },
-  { path: '/admin/attendance', label: '考勤管理', icon: IconClipboard },
-  { path: '/admin/scores', label: '成绩录入', icon: IconChart },
-  { path: '/admin/rankings', label: '排名查看', icon: IconTrophy },
-  { path: '/admin/events', label: '项目管理', icon: IconFlag },
-  { path: '/admin/ratings', label: '评分管理', icon: IconStar },
-  { path: '/admin/content', label: '训练内容', icon: IconBook },
+  { path: '/admin/athletes', label: '运动员管理', icon: IconUsers, badge: false },
+  { path: '/admin/training', label: '训练管理', icon: IconCalendar, badge: false },
+  { path: '/admin/attendance', label: '考勤管理', icon: IconClipboard, badge: false },
+  { path: '/admin/scores', label: '成绩录入', icon: IconChart, badge: false },
+  { path: '/admin/rankings', label: '排名查看', icon: IconTrophy, badge: false },
+  { path: '/admin/events', label: '项目管理', icon: IconFlag, badge: false },
+  { path: '/admin/ratings', label: '评分管理', icon: IconStar, badge: false },
+  { path: '/admin/content', label: '训练内容', icon: IconBook, badge: false },
+  { path: '/admin/notifications', label: '通知管理', icon: IconBell, badge: true },
 ]
 
-void route // prevent unused warning
+onMounted(() => {
+  fetchUnreadCount()
+  setInterval(fetchUnreadCount, 60000)
+})
+
+void route
 </script>
 
 <style scoped>
@@ -183,6 +205,19 @@ void route // prevent unused warning
   border-top: 1px solid hsl(0 0% 100% / 0.06);
 }
 
+.sidebar-notif-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0 0.375rem;
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 99px;
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
 .admin-main {
   flex: 1;
   margin-left: 240px;
@@ -206,6 +241,22 @@ void route // prevent unused warning
   position: sticky;
   top: 0;
   z-index: 30;
+}
+
+.topbar-notif-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  padding: 0 0.25rem;
+  min-width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 99px;
+  background: hsl(var(--destructive));
+  color: white;
 }
 
 .admin-content {

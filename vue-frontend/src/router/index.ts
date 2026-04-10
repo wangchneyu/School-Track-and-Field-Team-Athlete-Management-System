@@ -26,6 +26,7 @@ const router = createRouter({
         { path: 'events', name: 'Events', component: () => import('@/views/admin/EventsView.vue') },
         { path: 'ratings', name: 'Ratings', component: () => import('@/views/admin/RatingsView.vue') },
         { path: 'content', name: 'TrainingContent', component: () => import('@/views/admin/TrainingContentView.vue') },
+        { path: 'notifications', name: 'AdminNotifications', component: () => import('@/views/admin/NotificationsView.vue') },
       ],
     },
     {
@@ -38,6 +39,7 @@ const router = createRouter({
         { path: 'attendance', name: 'MyAttendance', component: () => import('@/views/athlete/MyAttendanceView.vue') },
         { path: 'ratings', name: 'MyRatings', component: () => import('@/views/athlete/MyRatingsView.vue') },
         { path: 'checkin', name: 'CheckIn', component: () => import('@/views/athlete/CheckInView.vue') },
+        { path: 'notifications', name: 'AthleteNotifications', component: () => import('@/views/athlete/NotificationsView.vue') },
       ],
     },
   ],
