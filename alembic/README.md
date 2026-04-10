@@ -1,9 +1,9 @@
 # Alembic Setup
 
-1. Install dependencies: `pip install -r requirements.txt`.
-2. Initialize the migration environment (once): `alembic init alembic`.
-3. Update `alembic.ini` to point `sqlalchemy.url` to the same value as `SQLALCHEMY_DATABASE_URI`.
-4. Edit `alembic/env.py` to import metadata from `app.db.base` (e.g. `from app.db.base import Base`).
-5. Generate migrations with `alembic revision --autogenerate -m "message"` and apply them using `alembic upgrade head`.
-
-The current file acts as a placeholder so the directory exists in version control.
+1. 依赖已在 `requirements.txt`，环境初始化完毕（`alembic.ini` + `alembic/env.py` 已配置）。
+2. 连接串取自 `.env`：`DB_ENGINE/DB_USER/DB_PASSWORD/DB_HOST/DB_PORT/DB_NAME`（默认 MySQL 8，端口 3307）。
+3. 常用命令：
+   - 生成迁移：`alembic revision --autogenerate -m "message"`
+   - 执行迁移：`alembic upgrade head`
+   - 回滚一步：`alembic downgrade -1`
+4. 目标元数据位于 `app.db.base.Base`，模型通过 `import app.models` 自动注册。

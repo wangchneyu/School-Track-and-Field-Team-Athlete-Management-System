@@ -7,11 +7,12 @@ from sqlalchemy.orm import Session
 
 from app.api import deps
 from app.core.config import get_settings
+from app.models.attendance import Attendance
 from app.models.qr_code import QrCode
 from app.models.training_session import TrainingSession
 from app.models.user import User
 from app.schemas.qr_code import QrCodeCreate, QrCodeRead
-from app.schemas.training_session import SessionCreate, SessionRead
+from app.schemas.training_session import SessionCreate, SessionRead, SessionUpdate
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 settings = get_settings()
@@ -47,6 +48,44 @@ def list_sessions(
     if end_date:
         query = query.filter(TrainingSession.date <= end_date)
     return query.order_by(TrainingSession.date.desc()).all()
+
+
+@router.put("/{session_id}", response_model=SessionRead)
+def update_session(
+    session_id: int,
+    data: SessionUpdate,
+    db: Session = Depends(deps.get_db),
+    _: User = Depends(deps.require_admin),
+) -> SessionRead:
+    """Edit a training session."""
+
+    session = db.query(TrainingSession).filter(TrainingSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    for field, value in data.model_dump(exclude_unset=True).items():
+        setattr(session, field, value)
+    db.commit()
+    db.refresh(session)
+    return session
+
+
+@router.delete("/{session_id}", status_code=204)
+def delete_session(
+    session_id: int,
+    db: Session = Depends(deps.get_db),
+    _: User = Depends(deps.require_admin),
+) -> None:
+    """Delete a training session."""
+
+    session = db.query(TrainingSession).filter(TrainingSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if db.query(Attendance).filter(Attendance.session_id == session_id).count():
+        raise HTTPException(status_code=400, detail="存在关联考勤记录，无法直接删除")
+    db.query(QrCode).filter(QrCode.session_id == session_id).delete()
+    db.delete(session)
+    db.commit()
+    return None
 
 
 @router.post("/{session_id}/qr", response_model=QrCodeRead)

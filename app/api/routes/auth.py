@@ -1,28 +1,22 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.api import deps
 from app.core.config import get_settings
 from app.core.security import create_access_token, get_password_hash, verify_password
 from app.models.user import User
-from app.schemas.auth import PasswordChangeRequest, Token
+from app.schemas.auth import LoginRequest, PasswordChangeRequest, Token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 settings = get_settings()
 
 
-@router.post("/login", response_model=Token)
-def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(deps.get_db),
-) -> Token:
-    """Authenticate a user and return an access token."""
-
-    user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.password_hash):
+def _do_login(username: str, password: str, db: Session) -> Token:
+    """Shared login logic for both JSON and form-data endpoints."""
+    user = db.query(User).filter(User.username == username).first()
+    if not user or not verify_password(password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
@@ -31,6 +25,30 @@ def login(
         timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     return Token(access_token=access_token, token_type="bearer", role=user.role)
+
+
+@router.post("/login", response_model=Token)
+async def login(
+    request: Request,
+    db: Session = Depends(deps.get_db),
+) -> Token:
+    """Authenticate a user and return an access token.
+
+    Supports both JSON body ``{"username": ..., "password": ...}`` and
+    standard OAuth2 form-data for backward compatibility.
+    """
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        body = await request.json()
+        login_req = LoginRequest(**body)
+        return _do_login(login_req.username, login_req.password, db)
+    # Fall back to form-data (OAuth2 spec)
+    form = await request.form()
+    username = form.get("username")
+    password = form.get("password")
+    if not username or not password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing credentials")
+    return _do_login(str(username), str(password), db)
 
 
 @router.post("/change-password")

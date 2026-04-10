@@ -20,6 +20,16 @@ class SessionCreate(SessionBase):
     pass
 
 
+class SessionUpdate(BaseModel):
+    """Payload for partially updating sessions."""
+
+    date: Optional[date] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
+    location: Optional[str] = None
+    description: Optional[str] = None
+
+
 class SessionRead(SessionBase):
     """Session data returned to clients."""
 

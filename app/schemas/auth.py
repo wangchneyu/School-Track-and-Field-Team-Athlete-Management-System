@@ -13,6 +13,11 @@ class TokenPayload(BaseModel):
     sub: str | None = None
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 class PasswordChangeRequest(BaseModel):
     old_password: str
     new_password: str

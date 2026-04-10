@@ -22,6 +22,19 @@ class AttendanceCreate(AttendanceBase):
     recorded_by: Optional[int] = None
 
 
+class AttendanceUpdate(BaseModel):
+    """Partial update for attendance records."""
+
+    session_id: Optional[int] = None
+    athlete_id: Optional[int] = None
+    status: Optional[str] = None
+    remark: Optional[str] = None
+    method: Optional[str] = None
+    device_info: Optional[str] = None
+    qr_token_id: Optional[int] = None
+    recorded_by: Optional[int] = None
+
+
 class AttendanceRead(AttendanceBase):
     """Attendance data returned to clients."""
 
@@ -29,5 +42,7 @@ class AttendanceRead(AttendanceBase):
     recorded_by: Optional[int] = None
     created_at: datetime
     updated_at: datetime
+    athlete_name: Optional[str] = None
+    session_date: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

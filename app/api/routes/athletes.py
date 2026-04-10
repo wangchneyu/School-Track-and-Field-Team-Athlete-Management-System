@@ -20,7 +20,7 @@ def create_athlete(
 ) -> AthleteRead:
     """Create a new athlete and linked user account."""
 
-    username = data.student_id
+    username = data.username or data.student_id
     if db.query(User).filter(User.username == username).first():
         raise HTTPException(status_code=400, detail="Student ID already registered as username")
     if db.query(Athlete).filter(Athlete.student_id == data.student_id).first():
@@ -101,3 +101,26 @@ def update_athlete(
     db.commit()
     db.refresh(athlete)
     return athlete
+
+
+@router.delete("/{athlete_id}", status_code=204)
+def delete_athlete(
+    athlete_id: int,
+    db: Session = Depends(deps.get_db),
+    _: User = Depends(deps.require_admin),
+) -> None:
+    """Delete an athlete and associated user account."""
+
+    athlete = db.query(Athlete).filter(Athlete.id == athlete_id).first()
+    if not athlete:
+        raise HTTPException(status_code=404, detail="Athlete not found")
+
+    user_id = athlete.user_id
+    db.delete(athlete)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if user:
+        db.delete(user)
+
+    db.commit()
+    return None

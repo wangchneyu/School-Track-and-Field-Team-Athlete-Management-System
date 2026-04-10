@@ -8,11 +8,27 @@ from app.api import deps
 from app.models.athlete import Athlete
 from app.models.attendance import Attendance
 from app.models.qr_code import QrCode
+from app.models.training_session import TrainingSession
 from app.models.user import User
-from app.schemas.attendance import AttendanceCreate, AttendanceRead
+from app.schemas.attendance import AttendanceCreate, AttendanceRead, AttendanceUpdate
 from app.schemas.qr_code import QrCheckinInfo, QrCheckinRequest
 
 router = APIRouter(prefix="/attendance", tags=["attendance"])
+
+
+def _enrich_attendance(records: list, db: Session) -> List[dict]:
+    """Add athlete_name and session_date to attendance records."""
+    athlete_ids = {r.athlete_id for r in records}
+    session_ids = {r.session_id for r in records}
+    athletes = {a.id: a.name for a in db.query(Athlete).filter(Athlete.id.in_(athlete_ids)).all()} if athlete_ids else {}
+    sessions = {s.id: str(s.date) for s in db.query(TrainingSession).filter(TrainingSession.id.in_(session_ids)).all()} if session_ids else {}
+    result = []
+    for r in records:
+        d = AttendanceRead.model_validate(r).model_dump()
+        d["athlete_name"] = athletes.get(r.athlete_id, "")
+        d["session_date"] = sessions.get(r.session_id, "")
+        result.append(d)
+    return result
 
 
 @router.post("", response_model=AttendanceRead)
@@ -33,7 +49,7 @@ def mark_attendance(
     return attendance
 
 
-@router.get("", response_model=List[AttendanceRead])
+@router.get("")
 def list_attendance(
     session_id: Optional[int] = None,
     athlete_id: Optional[int] = None,
@@ -41,7 +57,7 @@ def list_attendance(
     end_date: Optional[date] = None,
     db: Session = Depends(deps.get_db),
     _: User = Depends(deps.require_admin),
-) -> List[AttendanceRead]:
+) -> List[dict]:
     """List attendance records with optional filters."""
 
     query = db.query(Attendance)
@@ -55,16 +71,17 @@ def list_attendance(
     if end_date:
         end_dt = datetime.combine(end_date, datetime.max.time())
         query = query.filter(Attendance.created_at <= end_dt)
-    return query.order_by(Attendance.created_at.desc()).all()
+    records = query.order_by(Attendance.created_at.desc()).all()
+    return _enrich_attendance(records, db)
 
 
-@router.get("/me", response_model=List[AttendanceRead])
+@router.get("/me")
 def my_attendance(
     athlete: Athlete = Depends(deps.get_current_athlete),
     db: Session = Depends(deps.get_db),
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
-) -> List[AttendanceRead]:
+) -> List[dict]:
     """Return the current athlete's attendance history."""
 
     query = db.query(Attendance).filter(Attendance.athlete_id == athlete.id)
@@ -74,7 +91,43 @@ def my_attendance(
     if end_date:
         end_dt = datetime.combine(end_date, datetime.max.time())
         query = query.filter(Attendance.created_at <= end_dt)
-    return query.order_by(Attendance.created_at.desc()).all()
+    records = query.order_by(Attendance.created_at.desc()).all()
+    return _enrich_attendance(records, db)
+
+
+@router.put("/{attendance_id}", response_model=AttendanceRead)
+def update_attendance(
+    attendance_id: int,
+    data: AttendanceUpdate,
+    db: Session = Depends(deps.get_db),
+    _: User = Depends(deps.require_admin),
+) -> AttendanceRead:
+    """Edit an existing attendance record."""
+
+    attendance = db.query(Attendance).filter(Attendance.id == attendance_id).first()
+    if not attendance:
+        raise HTTPException(status_code=404, detail="Attendance not found")
+    for field, value in data.model_dump(exclude_unset=True).items():
+        setattr(attendance, field, value)
+    db.commit()
+    db.refresh(attendance)
+    return attendance
+
+
+@router.delete("/{attendance_id}", status_code=204)
+def delete_attendance(
+    attendance_id: int,
+    db: Session = Depends(deps.get_db),
+    _: User = Depends(deps.require_admin),
+) -> None:
+    """Remove an attendance record."""
+
+    attendance = db.query(Attendance).filter(Attendance.id == attendance_id).first()
+    if not attendance:
+        raise HTTPException(status_code=404, detail="Attendance not found")
+    db.delete(attendance)
+    db.commit()
+    return None
 
 
 @router.post("/qr-checkin", response_model=AttendanceRead)

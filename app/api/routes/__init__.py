@@ -8,6 +8,7 @@ from app.api.routes import (
     auth,
     events,
     featured_event,
+    notifications,
     rankings,
     ratings,
     scores,
@@ -26,3 +27,4 @@ api_router.include_router(scores.router)
 api_router.include_router(ratings.router)
 api_router.include_router(rankings.router)
 api_router.include_router(stats.router)
+api_router.include_router(notifications.router)
