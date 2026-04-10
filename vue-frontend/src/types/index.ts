@@ -121,6 +121,44 @@ export interface Stats {
   }>
 }
 
+export interface Notification {
+  id: number
+  title: string
+  content: string
+  type: 'training' | 'announcement' | 'general'
+  priority: 'low' | 'normal' | 'high' | 'urgent'
+  target_group: string
+  session_id: number | null
+  created_by: number
+  created_at: string
+  is_active: boolean
+  creator_name?: string
+  session_date?: string
+  session_location?: string
+  session_time?: string
+  is_read: boolean
+  read_at?: string
+  read_count: number
+  total_target: number
+}
+
+export interface NotificationReadUser {
+  user_id: number
+  username: string
+  read_at: string
+}
+
+export interface NotificationUnreadUser {
+  user_id: number
+  username: string
+  name: string
+}
+
+export interface NotificationDetail extends Notification {
+  read_users: NotificationReadUser[]
+  unread_users: NotificationUnreadUser[]
+}
+
 export type ToastType = 'success' | 'error' | 'info'
 
 export interface Toast {

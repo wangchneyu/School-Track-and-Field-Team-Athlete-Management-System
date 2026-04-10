@@ -130,63 +130,229 @@
 
 ## 运行环境
 
-- Python 3.11+
-- Node.js 18+（前端构建）
-- PostgreSQL 15+（Docker 推荐）
+| 依赖 | 最低版本 | 说明 |
+|------|----------|------|
+| Python | 3.11+ | 后端运行时 |
+| Node.js | 18+ | 前端构建（推荐 20 LTS） |
+| npm | 9+ | 随 Node.js 安装 |
+| PostgreSQL | 15+ | 数据库（推荐通过 Docker 启动） |
+| Docker | 24+ | 可选，用于数据库容器及生产部署 |
+
+> **快速检查**：运行以下命令确认环境就绪
+> ```bash
+> python --version   # >= 3.11
+> node --version     # >= 18
+> npm --version      # >= 9
+> docker --version   # 可选
+> ```
+
+---
 
 ## 安装与启动
 
-### 1. 后端
+### 方式一：本地开发（推荐）
+
+以下步骤将在本地启动完整的开发环境，前后端分别运行在不同端口，Vite 自动代理 API 请求。
+
+#### 第 1 步：克隆项目
 
 ```bash
-# 创建虚拟环境并安装依赖
-python -m venv .venv
-.\.venv\Scripts\activate          # Windows
-pip install -r requirements.txt
+git clone <仓库地址>
+cd "School Track and Field Team Athlete Management System"
+```
 
-# 配置环境变量
-copy .env.example .env            # 按需修改数据库连接
+#### 第 2 步：配置环境变量
 
-# 启动 PostgreSQL
+复制示例配置文件，并根据实际情况修改：
+
+```bash
+# Windows
+copy .env.example .env
+
+# macOS / Linux
+cp .env.example .env
+```
+
+`.env` 文件关键配置项说明：
+
+| 变量名 | 默认值 | 说明 |
+|--------|--------|------|
+| `SECRET_KEY` | `change-me` | **必须修改**，JWT 签名密钥，建议使用随机字符串 |
+| `DB_ENGINE` | `postgresql+psycopg2` | 数据库引擎，无需修改 |
+| `DB_HOST` | `localhost` | 数据库地址，Docker 部署时改为 `postgres` |
+| `DB_PORT` | `5432` | 数据库端口 |
+| `DB_USER` | `admin` | 数据库用户名 |
+| `DB_PASSWORD` | `123456` | 数据库密码，**生产环境务必修改** |
+| `DB_NAME` | `athletics` | 数据库名称 |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` | JWT 过期时间（分钟），默认 24 小时 |
+| `PORT` | `8001` | 后端服务端口 |
+
+> **提示**：生成安全的 SECRET_KEY：`python -c "import secrets; print(secrets.token_urlsafe(32))"`
+
+#### 第 3 步：启动 PostgreSQL 数据库
+
+**方式 A — 使用 Docker（推荐）：**
+
+```bash
 docker compose up -d postgres
+```
 
-# 初始化数据库（含示例数据）
+等待健康检查通过（约 5-10 秒）：
+
+```bash
+docker compose ps
+# 确认 STATUS 列显示 "healthy"
+```
+
+**方式 B — 使用本地已有的 PostgreSQL：**
+
+确保 PostgreSQL 服务已启动，然后手动创建数据库：
+
+```sql
+-- 连接到 PostgreSQL
+psql -U postgres
+
+-- 创建用户和数据库
+CREATE USER admin WITH PASSWORD '123456';
+CREATE DATABASE athletics OWNER admin;
+GRANT ALL PRIVILEGES ON DATABASE athletics TO admin;
+\q
+```
+
+然后确认 `.env` 中的 `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD` 与实际配置一致。
+
+#### 第 4 步：安装后端依赖并初始化
+
+```bash
+# 创建 Python 虚拟环境
+python -m venv .venv
+
+# 激活虚拟环境
+# Windows (PowerShell)
+.\.venv\Scripts\Activate.ps1
+# Windows (CMD)
+.\.venv\Scripts\activate.bat
+# macOS / Linux
+source .venv/bin/activate
+
+# 安装 Python 依赖
+pip install -r requirements.txt
+```
+
+初始化数据库表结构并写入示例数据：
+
+```bash
 python scripts/seed_data.py
+```
 
-# 启动后端服务
+> 该脚本会自动创建所有表并填入管理员账号、示例运动员、训练项目等基础数据。
+
+#### 第 5 步：启动后端服务
+
+```bash
 uvicorn main:app --reload --port 8001
 ```
 
-### 2. 前端
+启动后可通过以下地址验证后端是否正常：
+- API 文档：http://localhost:8001/docs （Swagger UI）
+- 替代文档：http://localhost:8001/redoc （ReDoc）
+
+#### 第 6 步：安装前端依赖并启动
+
+打开**新终端窗口**：
 
 ```bash
 cd vue-frontend
 
-# 安装依赖
+# 安装 Node.js 依赖
 npm install
 
-# 开发模式（自动代理 API 到后端 8001 端口）
+# 启动开发服务器
 npm run dev
-
-# 生产构建（输出到 dist/，由 FastAPI 直接服务）
-npm run build
 ```
 
-### 3. 生产部署
+启动后终端会显示类似信息：
 
-```bash
-# 构建前端
-cd vue-frontend && npm run build && cd ..
+```
+  VITE v6.x.x  ready in xxx ms
 
-# FastAPI 自动服务 vue-frontend/dist/
-uvicorn main:app --host 0.0.0.0 --port 8001
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.x.x:3000/
 ```
 
-或使用 Docker：
+#### 第 7 步：访问系统
+
+打开浏览器，访问 **http://localhost:3000**，使用下方体验账号登录。
+
+> **架构说明**：开发模式下，前端运行在 `3000` 端口，所有 `/api` 请求由 Vite 自动代理到后端 `8001` 端口（配置见 `vue-frontend/vite.config.ts`）。
+
+---
+
+### 方式二：生产部署
+
+#### 选项 A — 手动部署
 
 ```bash
+# 1. 构建前端静态文件
+cd vue-frontend
+npm install
+npm run build        # 输出到 vue-frontend/dist/
+cd ..
+
+# 2. 启动后端（自动服务 vue-frontend/dist/ 中的 SPA）
+uvicorn main:app --host 0.0.0.0 --port 8001 --workers 4
+```
+
+生产模式下只需访问 **http://your-server:8001**，FastAPI 同时提供 API 和前端静态文件服务。
+
+#### 选项 B — Docker Compose 一键部署
+
+```bash
+# 1. 构建前端（需在宿主机执行，容器内未安装 Node.js）
+cd vue-frontend && npm install && npm run build && cd ..
+
+# 2. 构建并启动所有服务
 docker compose build
 docker compose up -d
+
+# 3. 初始化数据库（首次部署时执行）
+docker compose exec app python scripts/seed_data.py
+```
+
+查看服务状态：
+
+```bash
+docker compose ps          # 查看容器状态
+docker compose logs -f app # 查看后端日志
+```
+
+停止服务：
+
+```bash
+docker compose down        # 停止并移除容器（数据保留）
+docker compose down -v     # 停止并清除数据卷（⚠️ 数据库数据将丢失）
+```
+
+> **端口映射**：Docker 模式下后端映射到宿主机 `8001` 端口（可通过 `.env` 中 `PORT` 变量修改）。
+
+---
+
+### 数据库迁移（可选）
+
+当模型（`app/models/`）发生变更时，使用 Alembic 进行数据库迁移：
+
+```bash
+# 生成迁移脚本
+alembic revision --autogenerate -m "描述变更内容"
+
+# 执行迁移
+alembic upgrade head
+
+# 回滚最近一次迁移
+alembic downgrade -1
+
+# 查看迁移历史
+alembic history
 ```
 
 ## 体验账号
@@ -228,6 +394,10 @@ docker compose up -d
 
 ## 数据库配置
 
-- `.env` 预设 `DB_ENGINE=postgresql+psycopg2`、`DB_HOST=localhost`、`DB_PORT=5432`
-- 连接串示例：`postgresql+psycopg2://admin:123456@localhost:5432/athletics`
-- Alembic 迁移：`alembic upgrade head`
+数据库连接通过 `.env` 环境变量管理，默认连接串格式：
+
+```
+postgresql+psycopg2://admin:123456@localhost:5432/athletics
+```
+
+配置项 `SQLALCHEMY_DATABASE_URI` 优先级最高——如果设置了该值，将直接使用，忽略 `DB_*` 拆分变量。更多变量说明见上方「安装与启动 → 第 2 步」。

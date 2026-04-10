@@ -4,6 +4,7 @@ from app.models.attendance import Attendance
 from app.models.athlete import Athlete
 from app.models.event import Event
 from app.models.featured_event import FeaturedEvent
+from app.models.notification import Notification, NotificationRead
 from app.models.rating import Rating
 from app.models.score import Score
 from app.models.training_session import TrainingSession
@@ -15,6 +16,8 @@ __all__ = [
     "Athlete",
     "Event",
     "FeaturedEvent",
+    "Notification",
+    "NotificationRead",
     "Rating",
     "Score",
     "TrainingSession",

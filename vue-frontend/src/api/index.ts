@@ -122,3 +122,17 @@ export const trainingContentApi = {
   categories: () => api.get('/training-contents/categories/list'),
   targetGroups: () => api.get('/training-contents/target-groups/list'),
 }
+
+/* ---- Notifications ---- */
+export const notificationApi = {
+  list: (params?: Record<string, string>) => api.get('/notifications', { params }),
+  get: (id: number) => api.get(`/notifications/${id}`),
+  create: (data: Record<string, unknown>) => api.post('/notifications', data),
+  update: (id: number, data: Record<string, unknown>) => api.put(`/notifications/${id}`, data),
+  delete: (id: number) => api.delete(`/notifications/${id}`),
+  getUnreadCount: () => api.get('/notifications/me/unread-count'),
+  getTodayTraining: () => api.get('/notifications/today-training'),
+  markAsRead: (id: number) => api.post(`/notifications/${id}/read`),
+  markAllRead: () => api.post('/notifications/mark-all-read'),
+  getReadStatus: (id: number) => api.get(`/notifications/${id}/read-status`),
+}
